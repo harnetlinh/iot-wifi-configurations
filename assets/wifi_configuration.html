@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Primera Tech Labs – Network Configuration</title>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Security-Policy" content="referrer no-referrer">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <style>
+        :root {
+            --bg-main: #f8f9fa;
+            --bg-card: #ffffff;
+            --bg-card-soft: #f0f2f5;
+            --accent: #4910bc;
+            --accent-soft: rgba(73, 16, 188, 0.12);
+            --accent-2: #6b2fe0;
+            --text-main: #1a1a2e;
+            --text-sub: #5c5c6e;
+            --border-soft: rgba(0, 0, 0, 0.10);
+            --danger: #dc3545;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+            background:
+                radial-gradient(circle at top, rgba(73, 16, 188, 0.08) 0, #f8f9fa 55%, #ffffff 100%),
+                #ffffff;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .page {
+            width: 100%;
+            max-width: 1100px;
+            padding: 20px 14px;
+            display: grid;
+            grid-template-columns: minmax(0, 3fr) minmax(0, 2.4fr);
+            gap: 22px;
+            align-items: stretch;
+        }
+
+        .card {
+            position: relative;
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 24px 22px 20px;
+            box-shadow:
+                0 4px 6px rgba(0, 0, 0, 0.04),
+                0 10px 20px rgba(73, 16, 188, 0.08),
+                0 25px 50px rgba(73, 16, 188, 0.12);
+            border: 1px solid rgba(73, 16, 188, 0.12);
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4910bc, #6b2fe0, #4910bc);
+            border-radius: 24px 24px 0 0;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .brand {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .brand-logo {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #f8f9fa, #ffffff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 20px;
+            color: #4910bc;
+            box-shadow:
+                0 2px 8px rgba(73, 16, 188, 0.15),
+                0 4px 16px rgba(73, 16, 188, 0.1);
+            border: 2px solid rgba(73, 16, 188, 0.15);
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .brand-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 4px;
+        }
+
+        .brand-text-main {
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            color: #4910bc;
+            text-shadow: 0 1px 2px rgba(73, 16, 188, 0.15);
+        }
+
+        .brand-text-sub {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .language-switch {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 999px;
+            padding: 4px 10px;
+            border: 1px solid rgba(73, 16, 188, 0.2);
+            box-shadow: 0 4px 14px rgba(73, 16, 188, 0.12);
+        }
+
+        .language-switch span {
+            font-size: 11px;
+            color: var(--text-sub);
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+        }
+
+        .language-switch select {
+            padding: 4px 6px;
+            border-radius: 999px;
+            border: 1px solid rgba(73, 16, 188, 0.2);
+            background: #ffffff;
+            color: var(--text-main);
+            font-size: 11px;
+            outline: none;
+        }
+
+        .tabs {
+            display: inline-flex;
+            padding: 4px;
+            border-radius: 999px;
+            background: rgba(73, 16, 188, 0.08);
+            border: 1px solid rgba(73, 16, 188, 0.15);
+            margin-bottom: 10px;
+        }
+
+        .tab {
+            padding: 8px 18px;
+            border-radius: 999px;
+            cursor: pointer;
+            font-size: 13px;
+            border: none;
+            background: transparent;
+            color: var(--text-sub);
+            transition: background 0.15s ease, color 0.15s ease, transform 0.08s ease;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            color: #ffffff;
+            font-weight: 600;
+            box-shadow: 0 4px 18px rgba(73, 16, 188, 0.4);
+            transform: translateY(-0.5px);
+        }
+
+        .tab-content {
+            display: none;
+            background: radial-gradient(circle at top left, rgba(73, 16, 188, 0.04), transparent 65%),
+                radial-gradient(circle at bottom right, rgba(107, 47, 224, 0.06), transparent 55%),
+                var(--bg-card-soft);
+            border-radius: 18px;
+            padding: 18px 18px 16px;
+            border: 1px solid rgba(73, 16, 188, 0.1);
+            margin-top: 8px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        h3 {
+            margin: 0 0 10px;
+            font-size: 15px;
+        }
+
+        p {
+            margin: 8px 0;
+            font-size: 13px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        select {
+            width: 100%;
+            padding: 8px 10px;
+            font-size: 13px;
+            border-radius: 10px;
+            border: 1px solid var(--border-soft);
+            background: #ffffff;
+            color: var(--text-main);
+            outline: none;
+            transition: border-color 0.16s ease, box-shadow 0.16s ease, background 0.16s ease, transform 0.06s ease;
+        }
+
+        input[type="text"]::placeholder,
+        input[type="password"]::placeholder {
+            color: #9ca3af;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus,
+        select:focus {
+            border-color: var(--accent);
+            box-shadow:
+                0 0 0 2px rgba(73, 16, 188, 0.2),
+                0 4px 18px rgba(73, 16, 188, 0.15);
+            background: #ffffff;
+            transform: translateY(-0.3px);
+        }
+
+        input[type="submit"] {
+            width: auto;
+            min-width: 120px;
+            padding: 9px 20px;
+            border-radius: 999px;
+            border: none;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(73, 16, 188, 0.35);
+            transition: background 0.16s ease, box-shadow 0.16s ease, transform 0.06s ease, opacity 0.1s ease;
+        }
+
+        input[type="submit"]:hover {
+            box-shadow: 0 12px 30px rgba(73, 16, 188, 0.45);
+            transform: translateY(-0.5px);
+        }
+
+        input[type="submit"]:active {
+            box-shadow: 0 6px 18px rgba(73, 16, 188, 0.4);
+            transform: translateY(0.2px) scale(0.99);
+        }
+
+        input[type="submit"]:disabled {
+            background: linear-gradient(135deg, #9ca3af, #6b7280);
+            cursor: not-allowed;
+            box-shadow: none;
+            opacity: 0.7;
+        }
+
+        #remember_bssid,
+        #sleep_mode {
+            width: auto;
+        }
+
+        #saved_list_container {
+            margin-bottom: 12px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: rgba(73, 16, 188, 0.04);
+            border: 1px solid rgba(73, 16, 188, 0.1);
+        }
+
+        #saved_list {
+            padding-left: 16px;
+            margin: 0;
+            list-style: none;
+        }
+
+        #saved_list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            margin: 4px 0;
+            gap: 6px;
+        }
+
+        #saved_list button {
+            border-radius: 999px;
+            border: 1px solid rgba(73, 16, 188, 0.2);
+            background: #ffffff;
+            color: var(--text-main);
+            font-size: 11px;
+            padding: 3px 6px;
+            cursor: pointer;
+        }
+
+        #saved_list button:hover {
+            background: rgba(73, 16, 188, 0.08);
+        }
+
+        #ap_list {
+            margin-top: 12px;
+            font-size: 13px;
+        }
+
+        #ap_list p {
+            margin-top: 0;
+        }
+
+        #ap_list .scanning {
+            font-style: italic;
+            color: var(--text-sub);
+        }
+
+        #ap_list a {
+            display: block;
+            margin-top: 5px;
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        #ap_list a:hover {
+            text-decoration: underline;
+        }
+
+        .error {
+            color: var(--danger);
+            font-size: 13px;
+        }
+
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(73, 16, 188, 0.95);
+            color: white;
+            padding: 14px 26px;
+            border-radius: 10px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.25s ease-in-out;
+            min-width: 200px;
+            text-align: center;
+            font-size: 14px;
+            box-shadow: 0 8px 32px rgba(73, 16, 188, 0.4);
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background-color: rgba(255, 255, 255, 0.95);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loading-overlay.show {
+            display: flex;
+        }
+
+        .loading-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .loading-banner {
+            max-width: 280px;
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(73, 16, 188, 0.2);
+        }
+
+        .loading-text {
+            color: #1a1a2e;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .guide-card {
+            position: relative;
+            background:
+                radial-gradient(circle at top right, rgba(107, 47, 224, 0.08), transparent 65%),
+                radial-gradient(circle at bottom left, rgba(73, 16, 188, 0.06), transparent 55%),
+                #ffffff;
+            border-radius: 22px;
+            padding: 20px 20px 18px;
+            box-shadow:
+                0 20px 52px rgba(73, 16, 188, 0.12),
+                0 0 0 1px rgba(73, 16, 188, 0.08);
+            border: 1px solid rgba(73, 16, 188, 0.15);
+            color: var(--text-main);
+        }
+
+        .guide-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0 0 10px;
+            font-size: 15px;
+        }
+
+        .guide-title span {
+            font-size: 18px;
+        }
+
+        .guide-intro {
+            font-size: 13px;
+            color: var(--text-sub);
+            margin: 0 0 10px;
+        }
+
+        .steps {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 10px;
+            counter-reset: step;
+        }
+
+        .steps li {
+            position: relative;
+            padding-left: 24px;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: var(--text-main);
+        }
+
+        .steps li::before {
+            counter-increment: step;
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: 1px;
+            width: 17px;
+            height: 17px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(73, 16, 188, 0.4);
+        }
+
+        .steps li span.tag {
+            margin-left: 4px;
+            font-size: 11px;
+            border-radius: 999px;
+            padding: 1px 7px;
+            border: 1px solid rgba(73, 16, 188, 0.5);
+            color: var(--accent);
+            background: rgba(73, 16, 188, 0.08);
+        }
+
+        .guide-highlight {
+            margin-top: 6px;
+            padding: 8px 9px;
+            border-radius: 14px;
+            font-size: 12px;
+            background: rgba(73, 16, 188, 0.04);
+            border: 1px dashed rgba(73, 16, 188, 0.35);
+            color: var(--text-sub);
+        }
+
+        .guide-highlight strong {
+            color: var(--accent);
+        }
+
+        .guide-section-title {
+            margin: 12px 0 4px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--accent-soft);
+        }
+
+        .error-list {
+            margin: 0;
+            padding-left: 16px;
+            font-size: 12px;
+            color: var(--text-sub);
+        }
+
+        .error-list li+li {
+            margin-top: 4px;
+        }
+
+        .help-links {
+            margin-top: 10px;
+            font-size: 12px;
+        }
+
+        .help-links a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .help-links a:hover {
+            text-decoration: underline;
+        }
+
+        .guide-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            padding: 3px 10px;
+            border-radius: 999px;
+            background: rgba(73, 16, 188, 0.08);
+            border: 1px solid rgba(73, 16, 188, 0.2);
+            margin-bottom: 6px;
+        }
+
+        .guide-badge span.dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #4910bc;
+            box-shadow: 0 0 12px rgba(73, 16, 188, 0.6);
+        }
+
+        .guide-footer {
+            margin-top: 10px;
+            font-size: 11px;
+            text-align: right;
+            color: var(--text-sub);
+        }
+
+        .guide-footer span {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        @media (max-width: 900px) {
+            .page {
+                grid-template-columns: minmax(0, 1fr);
+                max-width: 500px;
+                margin: 0 auto;
+            }
+
+            .card {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 520px) {
+            body {
+                padding: 0;
+            }
+
+            .page {
+                padding: 16px;
+                max-width: 100%;
+            }
+
+            .card,
+            .guide-card {
+                border-radius: 20px;
+                padding: 18px 16px 16px;
+            }
+
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .brand-logo {
+                width: 36px;
+                height: 36px;
+            }
+
+            .brand-text-main {
+                font-size: 16px;
+            }
+
+            .language-switch {
+                margin-left: 0;
+                margin-top: 4px;
+            }
+
+            .tabs {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .tab {
+                padding: 8px 16px;
+                font-size: 12px;
+            }
+
+            .tab-content {
+                padding: 14px 12px 12px;
+            }
+
+            input[type="text"],
+            input[type="password"],
+            select {
+                padding: 10px 12px;
+                font-size: 14px;
+            }
+
+            input[type="submit"] {
+                width: 100%;
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+
+            .loading-banner {
+                max-width: 220px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .page {
+                padding: 12px;
+            }
+
+            .card {
+                padding: 14px 12px 12px;
+            }
+
+            .brand-text-main {
+                font-size: 14px;
+            }
+
+            .brand-text-sub {
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="toast" id="toast"></div>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <img src="Primera-banner-loading.gif" alt="Loading..." class="loading-banner">
+            <div class="loading-text" data-lang="connecting">Connecting...</div>
+        </div>
+    </div>
+
+    <div class="page">
+        <div class="card">
+            <div class="card-header">
+                <div class="brand">
+                    <div class="brand-logo"><img src="Primera-logo-sm.svg" alt="Primera"></div>
+                    <div>
+                        <div class="brand-text-main">PRIMERA TECH LABS</div>
+                        <div class="brand-text-sub">Wi-Fi device setup</div>
+                    </div>
+                </div>
+
+                <div class="language-switch">
+                    <span>LANG</span>
+                    <select id="language" onchange="changeLanguage()">
+                        <option value="vi-VN">Tiếng Việt</option>
+                        <option value="en-US">English</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('wifi')" data-lang="wifi_tab">Wi-Fi Config</div>
+                <div class="tab" onclick="switchTab('advanced')" data-lang="advanced_tab" style="display:none;">Advanced
+                </div>
+            </div>
+
+            <div id="wifi-tab" class="tab-content active">
+                <div id="saved_list_container" style="display: none;">
+                    <h3 data-lang="saved_wifi">Saved Wi-Fi</h3>
+                    <ul id="saved_list">
+                        <li><span>SSID</span></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 data-lang="new_wifi">New Wi-Fi</h3>
+                    <p class="error" id="error"></p>
+                    <form action="/submit" method="post" onsubmit="submitForm(event)">
+                        <p>
+                            <label for="ssid">SSID:</label>
+                            <input type="text" id="ssid" name="ssid" required readonly>
+                        </p>
+                        <p>
+                            <label for="password" data-lang="password">Password:</label>
+                            <input type="password" id="password" name="password">
+                        </p>
+                        <p style="text-align:center;margin-top:12px;">
+                            <input type="submit" value="Connect" id="button" data-lang-value="connect">
+                        </p>
+                    </form>
+                    <p id="ap_list"></p>
+                </div>
+            </div>
+
+            <div id="advanced-tab" class="tab-content">
+                <form action="/advanced/submit" method="post" onsubmit="submitAdvancedForm(event)">
+                    <div>
+                        <h3 data-lang="advanced_tab">Advanced</h3>
+                        <p class="error" id="advanced_error"></p>
+
+                        <p>
+                            <label for="weather_api_key" data-lang="weather_api_key">Custom WEATHER API Key:</label>
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <input type="text" id="weather_api_key" name="weather_api_key"
+                                placeholder="Nhập API KEY từ https://openweathermap.org/api" style="flex:1;">
+                            <button type="button" onclick="clearWeatherApiKey()"
+                                style="padding:5px 10px;border:1px solid rgba(255,255,255,0.25);border-radius:8px;background:rgba(0,0,0,0.4);color:#fff;cursor:pointer;">❌</button>
+                        </div>
+                        </p>
+
+                        <p>
+                            <label for="weather_city" data-lang="weather_city">Custom WEATHER City:</label>
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <input type="text" id="weather_city" name="weather_city"
+                                placeholder="Để trống hoặc nhập tên thành phố" style="flex:1;">
+                            <button type="button" onclick="clearWeatherCity()"
+                                style="padding:5px 10px;border:1px solid rgba(255,255,255,0.25);border-radius:8px;background:rgba(0,0,0,0.4);color:#fff;cursor:pointer;">❌</button>
+                        </div>
+                        </p>
+
+                        <p>
+                            <label for="music_url" data-lang="music_url">Custom MUSIC URL:</label>
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <input type="text" id="music_url" name="music_url" style="flex:1;">
+                            <button type="button" onclick="clearMusicUrl()"
+                                style="padding:5px 10px;border:1px solid rgba(255,255,255,0.25);border-radius:8px;background:rgba(0,0,0,0.4);color:#fff;cursor:pointer;">❌</button>
+                        </div>
+                        </p>
+
+                        <p>
+                            <label for="ota_url" data-lang="ota_url">Custom OTA URL:</label>
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <input type="text" id="ota_url" name="ota_url" style="flex:1;">
+                            <button type="button" onclick="clearOtaUrl()"
+                                style="padding:5px 10px;border:1px solid rgba(255,255,255,0.25);border-radius:8px;background:rgba(0,0,0,0.4);color:#fff;cursor:pointer;">❌</button>
+                        </div>
+                        </p>
+
+                        <p style="display:flex;align-items:center;gap:10px;">
+                            <label for="max_tx_power" data-lang="max_tx_power" style="white-space:nowrap;">Wi-Fi Max TX
+                                Power:</label>
+                            <select id="max_tx_power" name="max_tx_power">
+                                <option value="8">2 dBm</option>
+                                <option value="20">5 dBm</option>
+                                <option value="28">7 dBm</option>
+                                <option value="34">8 dBm</option>
+                                <option value="44">11 dBm</option>
+                                <option value="52">13 dBm</option>
+                                <option value="56">14 dBm</option>
+                                <option value="60">15 dBm</option>
+                                <option value="66">16 dBm</option>
+                                <option value="72">18 dBm</option>
+                                <option value="80">20 dBm</option>
+                            </select>
+                        </p>
+
+                        <p style="display:flex;align-items:center;gap:10px;">
+                            <label for="remember_bssid" style="margin:0;">
+                                <span data-lang="remember_bssid">Remember BSSID when connecting to Wi-Fi</span>
+                            </label>
+                            <input type="checkbox" id="remember_bssid" name="remember_bssid">
+                        </p>
+
+                        <p style="display:flex;align-items:center;gap:10px;">
+                            <label for="sleep_mode" style="margin:0;">
+                                <span data-lang="sleep_mode">Enable Sleep Mode</span>
+                            </label>
+                            <input type="checkbox" id="sleep_mode" name="sleep_mode">
+                        </p>
+
+                        <p style="text-align:center;margin-top:12px;">
+                            <input type="submit" value="Save" id="advanced_button" data-lang-value="save">
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="guide-card" style="display:none;">
+            <div class="guide-badge">
+                <span class="dot"></span>
+                Quick guide for Primera Tech Labs devices
+            </div>
+            <h3 class="guide-title">
+                <span>📶</span>
+                Kết nối Wi-Fi cho thiết bị ESP32
+            </h3>
+            <p class="guide-intro">
+                Dùng trang này khi thiết bị Primera Tech Labs mở điểm phát Wi-Fi riêng. Chỉ cần chọn mạng nhà bạn và
+                nhập
+                mật khẩu, phần còn lại thiết bị sẽ tự xử lý.
+            </p>
+            <ol class="steps">
+                <li>
+                    Kết nối điện thoại/laptop vào Wi-Fi tạm thời của thiết bị
+                    (thường có chữ <strong>ESP32</strong> hoặc tên board) rồi mở trang cấu hình.
+                </li>
+                <li>
+                    Nhấn vào mạng Wi-Fi trong mục
+                    <strong data-lang="select_wifi">Select a 2.4G Wi-Fi from the list below:</strong>
+                    để đổ tên SSID vào ô bên trên.
+                </li>
+                <li>
+                    Nhập đúng mật khẩu Wi-Fi nhà bạn rồi nhấn nút
+                    <strong data-lang="connect">Connect</strong>
+                    <span class="tag">Tự động lưu</span>
+                </li>
+                <li>
+                    Đợi thiết bị báo kết nối thành công (đèn LED, tiếng nói, màn hình hoặc log trên serial).
+                    Sau đó bạn có thể rút nguồn cấp tạm thời và dùng thiết bị bình thường.
+                </li>
+                <li>
+                    Khi đã ổn định, vào tab <strong data-lang="advanced_tab">Advanced</strong> để chỉnh URL OTA,
+                    MUSIC hoặc công suất phát Wi-Fi cho phù hợp.
+                </li>
+            </ol>
+            <div class="guide-highlight">
+                <strong>Mẹo nhỏ:</strong> Luôn ưu tiên mạng 2.4&nbsp;GHz cho ESP32. Nếu router phát cả 2.4G và 5G,
+                hãy chọn tên Wi-Fi có đuôi <em>2G</em>, <em>2.4G</em> hoặc không ghi gì.
+            </div>
+
+            <div class="guide-section-title">Sự cố thường gặp</div>
+            <ul class="error-list">
+                <li>Không thấy tên Wi-Fi nhà bạn: kiểm tra router có bật 2.4G và SSID không ẩn.</li>
+                <li>Nhập đúng mật khẩu nhưng không kết nối: thử khởi động lại router và thiết bị rồi cấu hình lại.</li>
+                <li>Thiết bị hay rớt mạng: giảm công suất TX hoặc đổi vị trí đặt router cho gần hơn.</li>
+            </ul>
+
+            <div class="help-links">
+                Cần hỗ trợ thêm? Liên hệ CÔNG TY TNHH PRIMERA TECH LABS để được hỗ trợ.
+            </div>
+
+            <div class="guide-footer">
+                © CÔNG TY TNHH PRIMERA TECH LABS
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const button = document.getElementById('button');
+        const error = document.getElementById('error');
+        const ssid = document.getElementById('ssid');
+        let support5G = false;
+
+        const translations = {
+            'vi-VN': {
+                title: 'Cấu hình mạng',
+                saved_wifi: 'Wi-Fi đã lưu',
+                new_wifi: 'Wi-Fi mới',
+                password: 'Mật khẩu:',
+                connect: 'Kết nối',
+                connecting: 'Đang kết nối...',
+                select_wifi: 'Chọn Wi-Fi 2.4G từ danh sách bên dưới:',
+                select_wifi_5g: 'Chọn Wi-Fi từ danh sách bên dưới:',
+                scanning: 'Đang quét...',
+                wifi_tab: 'Cấu hình Wi-Fi',
+                advanced_tab: 'Tùy chọn nâng cao',
+                weather_API_key: 'Khóa API Thời tiết tùy chỉnh:',
+                weather_city: 'Thành phố Thời tiết tùy chỉnh:',
+                music_url: 'Địa chỉ MUSIC tùy chỉnh:',
+                ota_url: 'Địa chỉ OTA tùy chỉnh:',
+                max_tx_power: 'Công suất phát Wi-Fi tối đa:',
+                remember_bssid: 'Ghi nhớ BSSID khi kết nối với Wi-Fi',
+                sleep_mode: 'Bật chế độ ngủ',
+                save: 'Lưu'
+            },
+            'en-US': {
+                title: 'Network Configuration',
+                saved_wifi: 'Saved Wi-Fi',
+                new_wifi: 'New Wi-Fi',
+                password: 'Password:',
+                connect: 'Connect',
+                connecting: 'Connecting...',
+                select_wifi: 'Select a 2.4G Wi-Fi from the list below:',
+                select_wifi_5g: 'Select a Wi-Fi from the list below:',
+                scanning: 'Scanning...',
+                wifi_tab: 'Wi-Fi Config',
+                advanced_tab: 'Advanced',
+                weather_API_key: 'Custom Weather API Key:',
+                weather_city: 'Custom Weather City:',
+                music_url: 'Custom MUSIC URL:',
+                ota_url: 'Custom OTA URL:',
+                max_tx_power: 'Wi-Fi Max TX Power:',
+                remember_bssid: 'Remember BSSID when connecting to Wi-Fi',
+                sleep_mode: 'Enable Sleep Mode',
+                save: 'Save'
+            }
+        };
+
+
+        const languageMap = {
+            'vi': 'vi-VN', 'vi-VN': 'vi-VN',
+            'en': 'en-US', 'en-US': 'en-US', 'en-GB': 'en-US', 'en-CA': 'en-US', 'en-AU': 'en-US'
+        };
+
+        function getSupportedLanguage(lang) {
+            if (languageMap[lang]) return languageMap[lang];
+            const mainLang = lang.split('-')[0];
+            if (languageMap[mainLang]) return languageMap[mainLang];
+            return 'vi-VN';
+        }
+
+        function changeLanguage() {
+            const lang = document.getElementById('language').value;
+            if (!translations[lang]) {
+                document.getElementById('language').value = 'vi-VN';
+                return changeLanguage();
+            }
+            document.title = translations[lang].title;
+            document.querySelectorAll('[data-lang]').forEach(element => {
+                const key = element.getAttribute('data-lang');
+                if (translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                }
+            });
+            document.querySelectorAll('[data-lang-value]').forEach(element => {
+                const key = element.getAttribute('data-lang-value');
+                if (translations[lang][key]) {
+                    element.value = translations[lang][key];
+                }
+            });
+            const apList = document.getElementById('ap_list');
+            if (apList.firstChild) {
+                const selectText = support5G ? translations[lang].select_wifi_5g : translations[lang].select_wifi;
+                apList.firstChild.textContent = selectText;
+            }
+            localStorage.setItem('preferred_language', lang);
+        }
+
+        function renderSavedList(data) {
+            const savedListContainer = document.getElementById('saved_list_container');
+            const savedList = document.getElementById('saved_list');
+            savedList.innerHTML = '';
+            data.forEach((s, index) => {
+                const li = document.createElement('li');
+                let html = `<span>${s}</span>`;
+                if (index > 0) {
+                    html += ` <span>
+                        <button type="button" onclick="setDefaultItem(this, ${index})">⬆️</button>
+                        <button type="button" onclick="deleteItem(this, ${index})">❌</button>
+                    </span>`;
+                } else {
+                    html += ` <span><button type="button" onclick="deleteItem(this, ${index})">❌</button></span>`;
+                }
+                li.innerHTML = html;
+                savedList.appendChild(li);
+            });
+            savedListContainer.style.display = data.length > 0 ? 'block' : 'none';
+        }
+
+        function deleteItem(item, index) {
+            item.disabled = true;
+            fetch('/saved/delete?index=' + index)
+                .then(response => response.json())
+                .then(() => {
+                    loadSavedList();
+                });
+        }
+
+        function setDefaultItem(item, index) {
+            item.disabled = true;
+            fetch('/saved/set_default?index=' + index)
+                .then(response => response.json())
+                .then(() => {
+                    loadSavedList();
+                });
+        }
+
+        function loadSavedList() {
+            fetch('/saved/list')
+                .then(response => response.json())
+                .then(data => {
+                    renderSavedList(data);
+                });
+        }
+
+        function loadAPList() {
+            if (button.disabled) return;
+            const lang = document.getElementById('language').value;
+            const apList = document.getElementById('ap_list');
+            const hasExistingAPs = apList.querySelector('a') !== null;
+            if (!hasExistingAPs) {
+                apList.innerHTML = '<p class="scanning">' + translations[lang].scanning + '</p>';
+            }
+            fetch('/scan')
+                .then(response => response.json())
+                .then(data => {
+                    support5G = data.support_5g;
+                    const selectText = support5G ? translations[lang].select_wifi_5g : translations[lang].select_wifi;
+                    apList.innerHTML = '<p>' + selectText + '</p>';
+                    data.aps.forEach(ap => {
+                        const link = document.createElement('a');
+                        link.href = '#';
+                        link.textContent = ap.ssid + ' (' + ap.rssi + ' dBm)';
+                        if (ap.authmode === 0) {
+                            link.textContent += ' 🌐';
+                        } else {
+                            link.textContent += ' 🔒';
+                        }
+                        link.addEventListener('click', () => {
+                            ssid.value = ap.ssid;
+                        });
+                        apList.appendChild(link);
+                    });
+                    setTimeout(loadAPList, 5000);
+                })
+                .catch(() => {
+                    setTimeout(loadAPList, 5000);
+                });
+        }
+
+        async function submitForm(event) {
+            event.preventDefault();
+            button.disabled = true;
+            error.textContent = '';
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            loadingOverlay.classList.add('show');
+            const payload = {
+                ssid: ssid.value,
+                password: document.getElementById('password').value
+            };
+            try {
+                const response = await fetch('/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                const data = await response.json();
+                if (!data.success) {
+                    throw new Error(data.error || 'Connection failed');
+                }
+                button.disabled = false;
+                window.location.href = '/done.html';
+            } catch (err) {
+                loadingOverlay.classList.remove('show');
+                error.textContent = err.message;
+                button.disabled = false;
+            }
+        }
+
+        async function submitAdvancedForm(event) {
+            event.preventDefault();
+            const advancedButton = document.getElementById('advanced_button');
+            const advancedError = document.getElementById('advanced_error');
+            advancedButton.disabled = true;
+            advancedError.textContent = '';
+            const config = {
+                weather_api_key: document.getElementById('weather_api_key').value,
+                weather_city: document.getElementById('weather_city').value,
+                music_url: document.getElementById('music_url').value,
+                ota_url: document.getElementById('ota_url').value,
+                max_tx_power: parseInt(document.getElementById('max_tx_power').value),
+                remember_bssid: document.getElementById('remember_bssid').checked,
+                sleep_mode: document.getElementById('sleep_mode').checked
+            };
+            try {
+                const response = await fetch('/advanced/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(config)
+                });
+                const data = await response.json();
+                if (!data.success) {
+                    throw new Error(data.error || 'Save failed');
+                }
+                advancedButton.disabled = false;
+                showToast('Configuration saved');
+            } catch (err) {
+                advancedError.textContent = err.message;
+                advancedButton.disabled = false;
+            }
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(tabName + '-tab').classList.add('active');
+            document.querySelector(`.tab[onclick="switchTab('${tabName}')"]`).classList.add('active');
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        async function loadAdvancedConfig() {
+            try {
+                const response = await fetch('/advanced/config');
+                const data = await response.json();
+                if (data.weather_api_key) {
+                    document.getElementById('weather_api_key').value = data.weather_api_key;
+                }
+                if (data.weather_city) {
+                    document.getElementById('weather_city').value = data.weather_city;
+                }
+                if (data.music_url) {
+                    document.getElementById('music_url').value = data.music_url;
+                }
+                if (data.ota_url) {
+                    document.getElementById('ota_url').value = data.ota_url;
+                }
+                if (data.max_tx_power) {
+                    document.getElementById('max_tx_power').value = data.max_tx_power;
+                }
+                if (data.remember_bssid !== undefined) {
+                    document.getElementById('remember_bssid').checked = data.remember_bssid;
+                }
+                if (data.sleep_mode !== undefined) {
+                    document.getElementById('sleep_mode').checked = data.sleep_mode;
+                }
+            } catch (e) {
+            }
+        }
+
+        function clearWeatherApiKey() {
+            document.getElementById('weather_api_key').value = '';
+        }
+
+        function clearWeatherCity() {
+            document.getElementById('weather_city').value = '';
+        }
+
+        function clearMusicUrl() {
+            document.getElementById('music_url').value = '';
+        }
+
+        function clearOtaUrl() {
+            document.getElementById('ota_url').value = '';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const langParam = urlParams.get('lang');
+            const browserLang = navigator.language || navigator.userLanguage;
+            const savedLang = langParam ||
+                localStorage.getItem('preferred_language') ||
+                getSupportedLanguage(browserLang);
+            document.getElementById('language').value = savedLang;
+            changeLanguage();
+            loadSavedList();
+            loadAPList();
+            loadAdvancedConfig();
+        });
+
+        window.addEventListener('pageshow', (event) => {
+            if (event.persisted) {
+                loadSavedList();
+            }
+        });
+
+        ssid.addEventListener('touchstart', () => {
+            ssid.removeAttribute('readonly');
+            ssid.focus();
+        }, { once: true });
+    </script>
+</body>
+
+</html>
