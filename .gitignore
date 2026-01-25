@@ -1,2 +1,5 @@
-dist/
-_codeql_detected_source_root
+dist /
+    _codeql_detected_source_root
+        .DS_Store
+
+        .DS_Store
